@@ -1,0 +1,204 @@
+
+
+#include <iostream>
+using namespace std;
+
+class Node {
+    public:
+    int data;
+    Node* left;
+    Node* right;
+};
+
+
+Node* createNode(int data)
+{
+    Node* newNode = new Node();
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+
+Node* insertNode(Node* root, int data)
+{
+    if (root == NULL) 
+    { 
+        return createNode(data);
+    }
+
+    
+    if (data < root->data) {
+        root->left = insertNode(root->left, data);
+    }
+    else if (data > root->data) {
+        root->right = insertNode(root->right, data);
+    }
+
+    
+    return root;
+}
+
+
+void inorderTraversal(Node* root)
+{
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        cout << root->data << " ";
+        inorderTraversal(root->right);
+    }
+}
+void preorderTraversal(Node* root)
+{
+    if (root !=NULL) {
+        cout << root->data << " ";
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+void postorderTraversal(Node* root)
+{
+    if (root !=NULL) {
+        
+        postorderTraversal(root->left);
+        postorderTraversal(root->right);
+        cout << root->data << " ";
+    }
+}
+
+
+Node* searchNode(Node* root, int key)
+{
+   
+    if (root == NULL || root->data == key) 
+    {
+        return root;
+    }
+    if (root->data < key) 
+    {
+        return searchNode(root->right, key);
+    } 
+    else
+    return searchNode(root->left, key);
+}
+
+
+Node* minValueNode(Node* node)
+{
+    Node* current = node;
+  
+    while (current && current->left != nullptr) 
+    {
+        current = current->left;
+    }
+    return current;
+}
+
+
+Node* deleteNode(Node* root, int data)
+{
+    if (root == nullptr)
+        return root;
+
+    if (data < root->data)
+    {
+        root->left = deleteNode(root->left, data);
+    }
+    
+    else if (data > root->data)
+    {
+        root->right = deleteNode(root->right, data);
+    }
+    
+    else 
+    {
+        
+        if (root->left == nullptr) 
+        {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == nullptr)
+        {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        Node* temp = minValueNode(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
+int main()
+{
+
+    Node* root = NULL;
+    int n,data,choice,x,x2;
+    cout<<"Enter number of nodes:\n";
+    cin>>n;
+    char ch='s';
+    for(int i=0;i<n;i++)
+    {
+         cout<<"Enter data :";
+         cin>>data;
+        Node* nnode=new Node();
+        root=insertNode(root,data);
+    }
+    while(ch!='n')
+    {
+    cout<<"Enter choice:\n1.Inorder traversal\n2.Preorder traversal\n3.Postorder Traversal\n4.Delete\n5.Searching\n";
+    cin>>choice;
+    if(choice==1)
+    {
+    cout<<"Inorder traversal:\n";
+    inorderTraversal(root);
+    cout << endl;
+    }
+    else if(choice==2)
+    {
+    cout<<"Preorder traversal:\n";
+    preorderTraversal(root);
+    cout << endl;
+    }
+    else if(choice==3)
+    {
+    cout<<"Postorder traversal:\n";
+    postorderTraversal(root);
+    cout << endl; 
+    }
+    else if(choice==4)
+    {
+        cout<<"Enter data to be deleted:\n";
+        cin>>x;
+        root=deleteNode(root,x);
+        cout<<x<< " is successfully deleted:\n";
+    }
+    else if(choice==5)
+    {
+        cout<<"Enter element to be searched:\n";
+        cin>>x2;
+         Node* found = searchNode(root, x2);
+    
+       if (found != NULL)
+        {
+         cout << "Node "<<x2<<" found in the BST." << endl;
+        }
+       else 
+        {
+          cout << "Node "<<x2<<" not found in the BST." << endl;
+        }
+    }
+    else 
+    {
+    cout<<"Enter correct choice:\n";
+    }
+    cout<<"Do u want to continue:\n";
+    cin>>ch;
+    }
+   
+
+    return 0;
+}
